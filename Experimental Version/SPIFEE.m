@@ -1,0 +1,155 @@
+function Features = SPIFEE(Data, Hours, Channel, Temporal)
+
+%Peak data processing and feature extraction
+%Written by Colin Hogendorn 6/7/22
+%Rewritten with findchangepts for temporal features 11/16/22
+%This function uses findpeaks() from the
+%Signal Processing Toolbox for peaks and feature extraction as well as
+%findchangepts()
+%Designed for processing p53 oscillations and  geminin peaks
+
+%This function uses a gaussian filter with 9 time points for smoothing the
+%data, uses findpeaks() on the smoothed data, and then calculates and
+%outputs features in a 2d array
+
+%Data => a 2d array of fluorescent intensities with cell 1 being the first
+%column and so on. 
+%Period => How long of a time the points were taken over
+%Channel => Geminin or P53 Channel will vary the parameters for findpeaks()
+%Temporal => Option for how to calculate Temporal features. ChangePts or
+%10Prom
+
+
+%Take the data and smooth it with the gauss filter
+[Points, NumCells] = size(Data)
+PointPer = Points/Hours %Length of Pulse in terms of number of points
+LengthPulse = 3
+FiltData = smoothdata(Data, "gaussian", PointPer * LengthPulse);
+AvgMax = mean(max(FiltData)) %This value will be used to determine findpeaks() parameters
+
+
+
+%Parameters for findpeaks based upon channel
+if Channel == "Geminin"
+minHeight = 100
+minProm = 20
+minDistance = .5
+minWidth = .5
+maxWidth = 20
+elseif Channel == "p53"
+minHeight = AvgMax / 10
+minProm = AvgMax / 25
+minDistance = PointPer * 1
+minWidth = PointPer * 1
+maxWidth = PointPer * 50 % this is just here so it runs.
+
+end
+%Old values 100, 20, 1, .75, 50
+
+
+
+
+
+j = 1
+i = 1
+
+
+Features = []
+
+
+for i = 1:NumCells
+    CurrSignal = FiltData(:,i)
+    %First 4 features
+    [pks,locs,w,p] = findpeaks(CurrSignal,"MinPeakHeight", minHeight, "MinPeakProminence", minProm, "MinPeakDistance", minDistance, "MinPeakWidth",minWidth, "MaxPeakWidth", maxWidth);
+    numPeaks = length(pks)
+
+    %Calculate Freq
+    if length(pks) > 1
+        Freq = numPeaks / (max(locs) - min(locs))
+    else
+        Freq = 0
+    end
+
+%     if numPeaks <= 1 %Handles cases in which there are 0 peaks.
+%         continue
+%     else
+
+
+
+
+
+           %Visualize Features
+%        findchangepts(CurrSignal, "MaxNumChanges", (numPeaks * 2 + 1), 'Statistic', 'linear')
+%        figure()
+%        hold on
+      findpeaks(CurrSignal,"MinPeakHeight", minHeight, "MinPeakProminence", minProm, "MinPeakDistance", minDistance, "MinPeakWidth",minWidth, "MaxPeakWidth", maxWidth, 'Annotate', 'extents');
+      figure()
+
+   %Calculate TemporalFeatures
+   if strcmp(Temporal, 'Changepts')
+       [tramps,drops,AUC] = ChangePointTimeFeatures(CurrSignal,numPeaks,Points)
+   elseif strcmp(Temporal, 'Prom')
+       tramps = []
+       drops = []
+       AUC = []
+
+       for i = 1:numPeaks
+            %PeakLowerBound = locs(i) - w(i) / 2
+            %PeakUpperBound = locs(i) + w(i) / 2
+            
+            %Placeholder while I figure something better out
+            tramps(i) = locs(i) - (locs(i) - w(i)/2)
+            drops(i) = locs(i) - (locs(i) - w(i)/2)
+
+            myInt = cumtrapz(Points,CurrSignal)
+            myIntv = @(a,b) max(myInt(Points<=b)) - min(myInt(Points>=a));
+            AUC(s) = myIntv(trampArray(1,s),DropArray(2,s))
+
+       end
+   else
+       continue
+   end
+
+   %Put into the list of features
+    for k=1:numPeaks
+        Features(1,j) = pks(k)
+        Features(2,j) = locs(k)
+        Features(3,j) = w(k)
+        Features(4,j) = p(k)
+        Features(5,j) = Freq
+   %There are a few cases in which findchangepts() doesn't work well.
+   %This if-else handles those cases and puts NA for those features
+        if length(tramps) == numPeaks
+            Features(6,j) = tramps(k)
+            Features(7,j) = drops(k)
+            Features(8,j) = tramps(k) + drops(k)
+            Features(9,j) = AUC(k)
+        else
+%                 continue %delete this continue if you want ALL the data points. Leave if you just want data points that findchangepts() works for
+            Features(6,j) = "NA"
+            Features(7,j) = "NA"
+            Features(8,j) = "NA"
+            Features(9,j) = "NA"
+        end
+
+        %Book keeping features. Tells you the peak number and cell number
+        Features(10,j) = k
+        Features(11,j) = i
+    
+    
+            j = j + 1
+        end
+    
+    end
+
+
+end
+
+
+            
+
+
+
+
+
+
