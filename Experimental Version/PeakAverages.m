@@ -1,0 +1,22 @@
+function Results = PeakAverages(Data, Type)
+%Returns means for each feature on the first peak, or 
+%the biggest peak for each cell. Mostly wrote this to make it easier to
+%find the biggest peak because the coding for that is a little messy
+
+%Type = FirstPeaks, or BiggestPeak
+
+
+if Type == "FirstPeaks"
+    FirstPeaks = Data(:,find(Data(10,:) == 1))
+    Results = mean(FirstPeaks,2)
+
+else
+
+    Results = []
+    for i = unique(Data(11,:))
+        BigPeak = Data(:,find(Data(1,:) ==   max(Data(1,find(Data(11,:) == i) ) )))
+        Results = horzcat(Results,BigPeak) 
+    end
+    Results = mean(Results,2)
+
+end

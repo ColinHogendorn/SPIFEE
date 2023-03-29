@@ -26,6 +26,7 @@ FreqPulse = 5.5
 %Gaussian Filter window is half of the pulse width in terms of points
 FiltData = smoothdata(Data, "gaussian", PointPerHour * FreqPulse * 1/3); 
 AvgMax = mean(max(FiltData)) %This value will be used to determine findpeaks() parameters
+AvgMin = mean(min(FiltData)) %Determines roughly the basal p53 amount per treatment
 
 %Parameters for findpeaks()
 minHeight = AvgMax / 10
@@ -59,7 +60,7 @@ for i = 1:NumCells
 %        findchangepts(CurrSignal, "MaxNumChanges", (numPeaks * 2 + 1), 'Statistic', 'linear')
 %        figure()
 %        hold on
-%        findpeaks(CurrSignal,"MinPeakHeight", minHeight, "MinPeakProminence", minProm, "MinPeakDistance", minDistance, "MinPeakWidth",minWidth, "MaxPeakWidth", maxWidth, 'Annotate', 'extents');
+       %findpeaks(CurrSignal,"MinPeakHeight", minHeight, "MinPeakProminence", minProm, "MinPeakDistance", minDistance, "MinPeakWidth",minWidth, "MaxPeakWidth", maxWidth, 'Annotate', 'extents');
       
 
    %Calculate TemporalFeatures
@@ -113,6 +114,9 @@ for i = 1:NumCells
         %Book keeping features. Tells you the peak number and cell number
         Features(10,j) = k
         Features(11,j) = i
+        Features(12,j) = AvgMax
+        Features(13,j) = AvgMin
+        Features(14,j) = pks(k) / AvgMin
 
     
             j = j + 1

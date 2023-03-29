@@ -9,87 +9,91 @@
 %%Load Data
 load Full_Promoter_Dataset.mat
 
-CDK = raw_measurements(1,:)
-MDM2 = raw_measurements(2,:)
+CDKData = raw_measurements(1,:)
+MDM2Data = raw_measurements(2,:)
+%temp2 = vertcat(temp{:,2})
 
-%This particular data set has 2 genes and 6 treatments
-CDK_LowAmp = []
-P53_LowAmp = []
-CDK_HighFreq = []
-P53_HighFreq = []
-CDK_LongDuration = []
-P53_LongDuration = []
-CDK_HighAmp = []
-P53_HighAmp = []
-CDK_LowFreq = []
-P53_LowFreq = []
-CDK_Nat = []
-P53_Nat =[]
+%This particular data set has 6 treatments (Harton et al)
+
+p53_LowAmp = []
+p53_HighFreq = []
+p53_LongDuration = []
+p53_HighAmp = []
+p53_LowFreq = []
+p53_Nat =[]
 
 %Probably a faster way of doing this, but this is how I am getting my data
 %in the proper format
-CDK_LowAmp = CDK{1,1}{1,1}
-P53_LowAmp = CDK{1,1}{1,1}
+p53_LowAmp = CDKData{:,1}
+p53_LowAmp = transpose(vertcat(p53_LowAmp{:,2}))
 
-for i =2:56
-    CDK_LowAmp = vertcat(CDK_LowAmp, CDK{1,1}{i,1})
-    P53_LowAmp = vertcat(P53_LowAmp, CDK{1,1}{i,2})
-end
+p53_HighFreq = CDKData{:,2}
+p53_HighFreq = transpose(vertcat(p53_HighFreq{:,2}))
 
-CDK_HighFreq = CDK{1,2}{1,1}
-P53_HighFreq = CDK{1,2}{1,2}
+p53_LongDuration = CDKData{:,3}
+p53_LongDuration = transpose(vertcat(p53_LongDuration{:,2}))
 
-for i =2:57
-    CDK_HighFreq = vertcat(CDK_HighFreq, CDK{1,2}{i,1})
-    P53_HighFreq = vertcat(P53_HighFreq, CDK{1,2}{i,2})
-end
+p53_HighAmp = CDKData{:,4}
+p53_HighAmp = transpose(vertcat(p53_HighAmp{:,2}))
 
-CDK_LongDuration = CDK{1,3}{1,1}
-P53_LongDuration = CDK{1,3}{1,2}
+p53_LowFreq = CDKData{:,5}
+p53_LowFreq = transpose(vertcat(p53_LowFreq{:,2}))
 
-for i =2:51
-    CDK_LongDuration = vertcat(CDK_LongDuration, CDK{1,3}{i,1})
-    P53_LongDuration = vertcat(P53_LongDuration, CDK{1,3}{i,2})
-end
+p53_Nat = CDKData{:,6}
+p53_Nat = transpose(vertcat(p53_Nat{:,2}))
 
-CDK_HighAmp = CDK{1,4}{1,1}
-P53_HighAmp = CDK{1,4}{1,2}
 
-for i =2:44
-    CDK_HighAmp = vertcat(CDK_HighAmp, CDK{1,4}{i,1})
-    P53_HighAmp = vertcat(P53_HighAmp, CDK{1,4}{i,2})
-end
+% Previous Way
+% for i =2:56
+%     p53_LowAmp = vertcat(p53_LowAmp, p53Data{1,1}{i,2})
+% end
 
-CDK_LowFreq = CDK{1,5}{1,1}
-P53_LowFreq = CDK{1,5}{1,2}
-
-for i =2:52
-    CDK_LowFreq = vertcat(CDK_LowFreq, CDK{1,5}{i,1})
-    P53_LowFreq = vertcat(P53_LowFreq, CDK{1,5}{i,2})
-end
-
-CDK_Nat = CDK{1,6}{1,1}
-P53_Nat = CDK{1,6}{1,2}
-
-for i =2:51
-    CDK_Nat = vertcat(CDK_Nat, CDK{1,6}{i,1})
-    P53_Nat = vertcat(P53_Nat, CDK{1,6}{i,2})
-end
-
-% CDK_LowAmp = transpose(CDK_LowAmp)
-P53_LowAmp = transpose(P53_LowAmp)
-% CDK_HighFreq = transpose(CDK_HighFreq)
-P53_HighFreq = transpose(P53_HighFreq)
-% CDK_LongDuration = transpose(CDK_LongDuration)
-P53_LongDuration = transpose(P53_LongDuration)
-% CDK_HighAmp = transpose(CDK_HighAmp)
-P53_HighAmp = transpose(P53_HighAmp)
-% CDK_LowFreq = transpose(CDK_LowFreq)
-P53_LowFreq = transpose(P53_LowFreq)
-% CDK_Nat = transpose(CDK_Nat)
-P53_Nat = transpose(P53_Nat)
 
 
 %Run the p53 PeakProcessing Script
-P53_LowAmpFeat = SPIFEE(P53_LowAmp,24,'Prom')
-% P53_HighFreqFeat = PeakProcessing2(P53_HighFreq,73,24,57,"p53")
+p53_LowAmpFeat = SPIFEE(p53_LowAmp,24,'Prom')
+p53_HighFreqFeat = SPIFEE(p53_HighFreq,24,'Prom')
+p53_LongDurationFeat = SPIFEE(p53_LongDuration,24,'Prom')
+p53_HighAmpFeat = SPIFEE(p53_HighAmp,24,'Prom')
+p53_LowFreqFeat = SPIFEE(p53_LowFreq,24,'Prom')
+p53_NatFeat = SPIFEE(p53_Nat,24,'Prom')
+
+%Analysis
+Treatments = ["", "LowAmp", "HighFreq", "LongDuration", "HighAmp", "LowFreq", "Nat"]
+Features = ["Height", "Location", "Width", "Prominence", "Frequency", "Tramps", "Drops", "Duration", "Integral", "Peak", "Cell", "AvgMax", "AvgMin", "Peak over Basal"]
+
+temp1 = mean(p53_LowAmpFeat,2)
+temp2 = mean(p53_HighFreqFeat,2)
+temp3 = mean(p53_LongDurationFeat,2)
+temp4 = mean(p53_HighAmpFeat,2)
+temp5 = mean(p53_LowFreqFeat,2)
+temp6 = mean(p53_NatFeat,2)
+
+means = horzcat(transpose(Features),temp1,temp2,temp3,temp4,temp5,temp6)
+means = vertcat(Treatments, means)
+%%
+%Just First Peaks
+LowAmp1 = PeakAverages(p53_LowAmpFeat, 'FirstPeaks')
+HighFreq1 = PeakAverages(p53_HighFreqFeat, 'FirstPeaks')
+LongDuration1 = PeakAverages(p53_LongDurationFeat, 'FirstPeaks')
+HighAmp1 = PeakAverages(p53_HighAmpFeat, 'FirstPeaks')
+LowFreq1 = PeakAverages(p53_LowFreqFeat, 'FirstPeaks')
+Nat1 = PeakAverages(p53_NatFeat, 'FirstPeaks')
+
+
+FirstPeakMeans = horzcat(transpose(Features), LowAmp1, HighFreq1, LongDuration1, HighAmp1, LowFreq1, Nat1)
+FirstPeakMeans = vertcat(Treatments, FirstPeakMeans)
+
+%Biggest peak
+
+% bigLowAmp = p53_LowAmpFeat(:,find(max(p53LowAmpFeat(1,:))
+LowAmpBig = PeakAverages(p53_LowAmpFeat, 'Big')
+HighFreqBig = PeakAverages(p53_HighFreqFeat, 'Big')
+LongDurationBig = PeakAverages(p53_LongDurationFeat, 'Big')
+HighAmpBig = PeakAverages(p53_HighAmpFeat, 'Big')
+LowFreqBig = PeakAverages(p53_LowFreqFeat, 'Big')
+NatBig = PeakAverages(p53_NatFeat, 'Big')
+
+BigPeakMeans = horzcat(transpose(Features), LowAmpBig, HighFreqBig, LongDurationBig, HighAmpBig, LowFreqBig,NatBig)
+BigPeakMeans = vertcat(Treatments, BigPeakMeans)
+
