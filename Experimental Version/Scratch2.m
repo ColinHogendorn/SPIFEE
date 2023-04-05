@@ -97,3 +97,7 @@ NatBig = PeakAverages(p53_NatFeat, 'Big')
 BigPeakMeans = horzcat(transpose(Features), LowAmpBig, HighFreqBig, LongDurationBig, HighAmpBig, LowFreqBig,NatBig)
 BigPeakMeans = vertcat(Treatments, BigPeakMeans)
 
+%%
+% Clustering and PCA
+
+
