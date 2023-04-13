@@ -3,20 +3,26 @@ function Results = PeakAverages(Data, Type)
 %the biggest peak for each cell. Mostly wrote this to make it easier to
 %find the biggest peak because the coding for that is a little messy
 
-%Type = FirstPeaks, or BiggestPeak
-
+%Type = FirstPeaks, BiggestPeak, or All other Peaks besides First
+Results = []
 
 if Type == "FirstPeaks"
-    FirstPeaks = Data(:,find(Data(10,:) == 1))
-    Results = mean(FirstPeaks,2)
+    Results = Data(:,find(Data(10,:) == 1))
+    
 
-else
+elseif Type == "BiggestPeak"
 
-    Results = []
+
     for i = unique(Data(11,:))
         BigPeak = Data(:,find(Data(1,:) ==   max(Data(1,find(Data(11,:) == i) ) )))
         Results = horzcat(Results,BigPeak) 
     end
-    Results = mean(Results,2)
+
+elseif Type == "AllOthers"
+    OtherPeakIndex = find(Data(10,:) ~= 1)
+    Results = Data(:,OtherPeakIndex)
+
+else 
+
 
 end

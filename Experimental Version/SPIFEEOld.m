@@ -30,7 +30,7 @@ AvgMin = mean(min(FiltData)) %Determines roughly the basal p53 amount per treatm
 
 %Parameters for findpeaks()
 minHeight = AvgMax / 10
-minProm = AvgMax / 15
+minProm = AvgMax / 25
 minDistance = PointPerHour * .3
 minWidth = PointPerHour * .5
 maxWidth = PointPerHour  * 5 
@@ -43,11 +43,9 @@ Features = []
 
 
 for i = 1:NumCells
-    % CurrSignal = FiltData(:,i)
-     CurrSignal = Data(:,i)
+    CurrSignal = FiltData(:,i)
     %First 4 features
     [pks,locs,w,p] = findpeaks(CurrSignal,"MinPeakHeight", minHeight, "MinPeakProminence", minProm, "MinPeakDistance", minDistance, "MinPeakWidth",minWidth, "MaxPeakWidth", maxWidth);
-    %[pks,locs,w,p] = findpeaks(CurrSignal)
     numPeaks = length(pks)
 
     %Calculate Freq
@@ -61,8 +59,9 @@ for i = 1:NumCells
          %Visualize Features
 %        findchangepts(CurrSignal, "MaxNumChanges", (numPeaks * 2 + 1), 'Statistic', 'linear')
 %        figure()
-%        findpeaks(CurrSignal,"MinPeakHeight", minHeight, "MinPeakProminence", minProm, "MinPeakDistance", minDistance, "MinPeakWidth",minWidth, "MaxPeakWidth", maxWidth, 'Annotate', 'extents');
-%       
+%        hold on
+       %findpeaks(CurrSignal,"MinPeakHeight", minHeight, "MinPeakProminence", minProm, "MinPeakDistance", minDistance, "MinPeakWidth",minWidth, "MaxPeakWidth", maxWidth, 'Annotate', 'extents');
+      
 
    %Calculate TemporalFeatures
    if strcmp(Temporal, 'Changepts')
@@ -84,7 +83,6 @@ for i = 1:NumCells
             myInt = cumtrapz(timePoints,CurrSignal)
             myIntv = @(a,b) max(myInt(timePoints<=b)) - min(myInt(timePoints>=a));
             AUC(z) = myIntv((locs(z) - tramps(z)), (locs(z) + drops(z)))
-%             AUC(z) = myIntv(1,143)
 
        end
    else
@@ -95,18 +93,30 @@ for i = 1:NumCells
     for k=1:numPeaks
         Features(1,j) = pks(k)
         Features(2,j) = locs(k)
-        Features(3,j) = w(k) / PointPerHour
+        Features(3,j) = w(k)
         Features(4,j) = p(k)
-        Features(5,j) = Freq * PointPerHour
-        Features(6,j) = tramps(k) + drops(k) / PointPerHour
-        Features(7,j) = AUC(k)
- 
+        Features(5,j) = Freq
+    %There are a few cases in which findchangepts() doesn't work well.
+    %This if-else handles those cases and puts NA for those features
+        if length(tramps) == numPeaks
+            Features(6,j) = tramps(k)
+            Features(7,j) = drops(k)
+            Features(8,j) = tramps(k) + drops(k)
+            Features(9,j) = AUC(k)
+        else
+    %                 continue %delete this continue if you want ALL the data points. Leave if you just want data points that findchangepts() works for
+            Features(6,j) = "NA"
+            Features(7,j) = "NA"
+            Features(8,j) = "NA"
+            Features(9,j) = "NA"
+        end
+    
         %Book keeping features. Tells you the peak number and cell number
-        Features(8,j) = k
-        Features(9,j) = i
-        Features(10,j) = AvgMax
-        Features(11,j) = AvgMin
-        Features(12,j) = pks(k) / AvgMin
+        Features(10,j) = k
+        Features(11,j) = i
+        Features(12,j) = AvgMax
+        Features(13,j) = AvgMin
+        Features(14,j) = pks(k) / AvgMin
 
     
             j = j + 1

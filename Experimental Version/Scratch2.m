@@ -60,44 +60,66 @@ p53_NatFeat = SPIFEE(p53_Nat,24,'Prom')
 
 %Analysis
 Treatments = ["", "LowAmp", "HighFreq", "LongDuration", "HighAmp", "LowFreq", "Nat"]
-Features = ["Height", "Location", "Width", "Prominence", "Frequency", "Tramps", "Drops", "Duration", "Integral", "Peak", "Cell", "AvgMax", "AvgMin", "Peak over Basal"]
+Features = ["Height", "Location", "Width", "Prominence", "Frequency", "Duration", "Integral", "Peak", "Cell", "AvgMax", "AvgMin", "Peak over Basal"]
 
-temp1 = mean(p53_LowAmpFeat,2)
-temp2 = mean(p53_HighFreqFeat,2)
-temp3 = mean(p53_LongDurationFeat,2)
-temp4 = mean(p53_HighAmpFeat,2)
-temp5 = mean(p53_LowFreqFeat,2)
-temp6 = mean(p53_NatFeat,2)
 
-means = horzcat(transpose(Features),temp1,temp2,temp3,temp4,temp5,temp6)
-means = vertcat(Treatments, means)
 %%
+%Means
+
+%AllMeans
+% temp1 = mean(p53_LowAmpFeat,2)
+% temp2 = mean(p53_HighFreqFeat,2)
+% temp3 = mean(p53_LongDurationFeat,2)
+% temp4 = mean(p53_HighAmpFeat,2)
+% temp5 = mean(p53_LowFreqFeat,2)
+% temp6 = mean(p53_NatFeat,2)
+% means = horzcat(transpose(Features),temp1,temp2,temp3,temp4,temp5,temp6)
+% means = vertcat(Treatments, means)
+
 %Just First Peaks
-LowAmp1 = PeakAverages(p53_LowAmpFeat, 'FirstPeaks')
-HighFreq1 = PeakAverages(p53_HighFreqFeat, 'FirstPeaks')
-LongDuration1 = PeakAverages(p53_LongDurationFeat, 'FirstPeaks')
-HighAmp1 = PeakAverages(p53_HighAmpFeat, 'FirstPeaks')
-LowFreq1 = PeakAverages(p53_LowFreqFeat, 'FirstPeaks')
-Nat1 = PeakAverages(p53_NatFeat, 'FirstPeaks')
-
-
-FirstPeakMeans = horzcat(transpose(Features), LowAmp1, HighFreq1, LongDuration1, HighAmp1, LowFreq1, Nat1)
-FirstPeakMeans = vertcat(Treatments, FirstPeakMeans)
+% LowAmp1 = PeakAverages(p53_LowAmpFeat, 'FirstPeaks')
+% HighFreq1 = PeakAverages(p53_HighFreqFeat, 'FirstPeaks')
+% LongDuration1 = PeakAverages(p53_LongDurationFeat, 'FirstPeaks')
+% HighAmp1 = PeakAverages(p53_HighAmpFeat, 'FirstPeaks')
+% LowFreq1 = PeakAverages(p53_LowFreqFeat, 'FirstPeaks')
+% Nat1 = PeakAverages(p53_NatFeat, 'FirstPeaks')
+% 
+% 
+% FirstPeakMeans = horzcat(transpose(Features), LowAmp1, HighFreq1, LongDuration1, HighAmp1, LowFreq1, Nat1)
+% FirstPeakMeans = vertcat(Treatments, FirstPeakMeans)
 
 %Biggest peak
-
 % bigLowAmp = p53_LowAmpFeat(:,find(max(p53LowAmpFeat(1,:))
-LowAmpBig = PeakAverages(p53_LowAmpFeat, 'Big')
-HighFreqBig = PeakAverages(p53_HighFreqFeat, 'Big')
-LongDurationBig = PeakAverages(p53_LongDurationFeat, 'Big')
-HighAmpBig = PeakAverages(p53_HighAmpFeat, 'Big')
-LowFreqBig = PeakAverages(p53_LowFreqFeat, 'Big')
-NatBig = PeakAverages(p53_NatFeat, 'Big')
+% LowAmpBig = PeakAverages(p53_LowAmpFeat, 'Big')
+% HighFreqBig = PeakAverages(p53_HighFreqFeat, 'Big')
+% LongDurationBig = PeakAverages(p53_LongDurationFeat, 'Big')
+% HighAmpBig = PeakAverages(p53_HighAmpFeat, 'Big')
+% LowFreqBig = PeakAverages(p53_LowFreqFeat, 'Big')
+% NatBig = PeakAverages(p53_NatFeat, 'Big')
+% 
+% BigPeakMeans = horzcat(transpose(Features), LowAmpBig, HighFreqBig, LongDurationBig, HighAmpBig, LowFreqBig,NatBig)
+% BigPeakMeans = vertcat(Treatments, BigPeakMeans)
 
-BigPeakMeans = horzcat(transpose(Features), LowAmpBig, HighFreqBig, LongDurationBig, HighAmpBig, LowFreqBig,NatBig)
-BigPeakMeans = vertcat(Treatments, BigPeakMeans)
+% OtherPeaks
+% allPeak1 = ExtractPeaks(p53_LowAmpFeat, 'AllOthers')
+
+
 
 %%
 % Clustering and PCA
+
+pcaData = p53_HighAmpFeat([1,3,4,5,7],:)
+[coeff, score, latent, tsquared, explained, mu] = pca(transpose(pcaData))
+
+
+
+
+
+%%
+% Parametric Equations
+
+
+%%
+%Bimodal Distribution
 
 
