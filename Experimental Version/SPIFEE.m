@@ -43,8 +43,8 @@ Features = []
 
 
 for i = 1:NumCells
-    % CurrSignal = FiltData(:,i)
-     CurrSignal = Data(:,i)
+     CurrSignal = FiltData(:,i)
+     %CurrSignal = Data(:,i)
     %First 4 features
     [pks,locs,w,p] = findpeaks(CurrSignal,"MinPeakHeight", minHeight, "MinPeakProminence", minProm, "MinPeakDistance", minDistance, "MinPeakWidth",minWidth, "MaxPeakWidth", maxWidth);
     %[pks,locs,w,p] = findpeaks(CurrSignal)
@@ -60,9 +60,8 @@ for i = 1:NumCells
 
          %Visualize Features
 %        findchangepts(CurrSignal, "MaxNumChanges", (numPeaks * 2 + 1), 'Statistic', 'linear')
-%        figure()
-%        findpeaks(CurrSignal,"MinPeakHeight", minHeight, "MinPeakProminence", minProm, "MinPeakDistance", minDistance, "MinPeakWidth",minWidth, "MaxPeakWidth", maxWidth, 'Annotate', 'extents');
-%       
+%         findpeaks(CurrSignal,"MinPeakHeight", minHeight, "MinPeakProminence", minProm, "MinPeakDistance", minDistance, "MinPeakWidth",minWidth, "MaxPeakWidth", maxWidth, 'Annotate', 'extents');
+%         figure()
 
    %Calculate TemporalFeatures
    if strcmp(Temporal, 'Changepts')
