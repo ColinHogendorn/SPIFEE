@@ -90,6 +90,8 @@ for i = 1:NumCells
        continue
    end
 
+   %Feature List: Height,Location,Width,Prominence,Frequency, Duration,
+   %Area under Curve, Peak Number, Cell Number, AvgMax, AvgMin, Basal rate
    %Put into the list of features
     for k=1:numPeaks
         Features(1,j) = pks(k)
