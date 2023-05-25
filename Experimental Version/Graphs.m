@@ -123,40 +123,22 @@ HighFeat = SPIFEE(p53_HighAmp,24,'Prom')
 
 %%
 % Fourier Transforms
-% L = 73
-% Y = fft(LAmpP53(:,1))
-% Fs = 10
-% 
-% P2 = abs(Y/L);
-% P1 = P2(1:L/2+1);
-% P1(2:end-1) = 2*P1(2:end-1);
-% f = Fs*(0:(L/2))/L;
-% 
-% plot(f,P1)
-% 
-% Y2 = smoothdata(LAmpP53(:,1), "gaussian", 5)
-% P2 = abs(Y2/L);
-% P1 = P2(1:L/2+1);
-% P1(2:end-1) = 2*P1(2:end-1);
-% f = Fs*(0:(L/2))/L;
-% 
-% hold on
-% plot(f,P1)
+L = 73
+Y = fft(LAmpP53(:,1))
+Fs = 10
 
+P2 = abs(Y/L);
+P1 = P2(1:L/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = Fs*(0:(L/2))/L;
 
-%% 
+plot(f,P1)
 
-%Example for CDK
+Y2 = smoothdata(LAmpP53(:,1), "gaussian", 5)
+P2 = abs(Y2/L);
+P1 = P2(1:L/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = Fs*(0:(L/2))/L;
 
-data = CDK_LowAmp(:,27)
-
-data = smoothdata(data, 'gaussian', 10)
-
-plot(data, 'LineWidth', 3)
-axis off
-
-%%
-% Clusters
-
-rng('default') 
-evaluation = evalclusters()
+hold on
+plot(f,P1)
