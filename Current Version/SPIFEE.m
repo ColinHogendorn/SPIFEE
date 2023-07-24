@@ -25,6 +25,14 @@ PointPerHour = Points/Hours ;
 
 %Gaussian Filter window is half of the pulse width in terms of points
 [FiltData, window] = smoothdata(Data, "gaussian", (lenPulse * PointPerHour) / 3)
+
+
+% avgPerTrace = mean(FiltData, 1)
+% ThreshIDX = find(avgPerTrace(1,:) > 300)
+% FiltData = FiltData(:,ThreshIDX)
+% 
+% [Points, NumCells] = size(FiltData)
+
 AvgMax = mean(max(FiltData)); %This value will be used to determine findpeaks() parameters
 AvgMin = mean(min(FiltData)); %Determines roughly the basal p53 amount per treatment
 
@@ -64,8 +72,8 @@ for i = 1:NumCells
          %Visualize Features
 %        findchangepts(CurrSignal, "MaxNumChanges", (numPeaks * 2 + 1), 'Statistic', 'linear')
 %        figure()
-    % findpeaks(CurrSignal,"MinPeakHeight", minHeight, "MinPeakProminence", minProm, "MinPeakDistance", minDistance, "MinPeakWidth",minWidth, "MaxPeakWidth", maxWidth, 'Annotate', 'extents');
-    % 
+       % findpeaks(CurrSignal,"MinPeakHeight", minHeight, "MinPeakProminence", minProm, "MinPeakDistance", minDistance, "MinPeakWidth",minWidth, "MaxPeakWidth", maxWidth, 'Annotate', 'extents');
+
 
    %Calculate TemporalFeatures
        tramps = [];
