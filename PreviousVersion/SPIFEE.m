@@ -79,6 +79,8 @@ else %Default
     
 end
 
+%TO DO Check if min width is more than the points.
+
 %Put in terms of hours for downstream intuition for graphs and such
 minDist2  = minDistance / PointPerHour;
 minWidth2 = minWidth / PointPerHour;

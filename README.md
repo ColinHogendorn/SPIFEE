@@ -2,59 +2,43 @@
 
 
 
-\---------------------------------------------------------------------------------------------------------------------------------------------------
-
 Welcome to the Signal Processing and Integrated FEature Extraction (SPIFEE) Pipeline!
 
 
 
-To start, you need to download the Signal Processing Toolbox from MATLAB. This can accessed through the "Add-Ons" Button in the Home tab in MATLAB.
+This project implements a MATLAB-based data analysis pipeline for extracting and characterizing dynamic features from fluorescence time-series data. The pipeline processes raw signals to identify peaks and quantify key properties such as height, width, prominence, frequency, duration, and area under the curve (AUC). Building on these features, it performs downstream statistical analysis and clustering to uncover patterns in signaling behavior across cells or experimental conditions. The framework is designed to support large-scale, systematic exploration of biological network dynamics, with an emphasis on robustness, reproducibility, and extensibility.
 
 
 
-INSTRUCTIONS
-
-\---------------------------------------------------------------------------------------------------------------------------------------------------
-
-After that, to run SPIFEE, Simply navigate to the SPIFEE files, then open and run the "SPIFEE\_GUI" script. This will open a dialogue box with a few options. First, input parameters that will affect how SPIFEE will filter your data. Enter the Oscillatory Frequency of your signal of interest. (p53 has a frequency of \~5.5) and then enter how long your experiment was. From there, check the boxes of the kinds of analysis that you want outputted from SPIFEE. (Clusters, Average traces of each experimental condition, and Means of each feature). Also enter the name of your experiment to name output files. Then hit RUN which will ask you to select your data. (Data must be in .mat format, with columns representing individual traces. SPIFEE can handle single files or multiple files. the field name for the fluorescent values must be consistent across files).
+This pipeline was developed in [MATLAB](https://www.mathworks.com/products/matlab.html), has been tested with MATLAB R2023a and 2025b on Windows 11 and requires the Signal Processing Toolbox.
 
 
 
-Speaking of features, here is a list of the intuitive features that SPIFEE calculates:
+Instructions to run are within the startup guide, along with a demo script and an example dataset.
 
 
 
-1\. Height
-
-2\. Location
-
-3\. Width
-
-4\. Prominence
-
-5\. Frequency
-
-6\. Integral
-
-7\. Peak Number\*
-
-8\. Cell Number\*
+This project is licensed under the MIT License. You are free to use, modify, and distribute this software for both academic and commercial purposes, provided that the original copyright and license notice are included.
 
 
 
-Along with these features, SPIFEE will save various figures showing clustering results and other analysis. 
+## Usage
+
+To learn how to use SPIFEE, please read the documentation and QuickStart guide.
 
 
 
-\----------------------------------------------------------------------------------------------------------------------------------------------------
+If you use our software please cite our paper:
 
 
 
-Any questions or comments should be sent to Colin Hogendorn at hogen046@umn.edu
+(Citation)
 
 
 
+## Contact
 
 
-\*Bookkeeping features. Not "Features" of the trace. Used for making downstream analysis easier\*
+
+Any questions, comments, issues should be sent to Colin Hogendorn at cfhogendorn@gmail.com
 

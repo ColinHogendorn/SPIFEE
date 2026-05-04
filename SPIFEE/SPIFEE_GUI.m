@@ -1,6 +1,7 @@
+%SPIFEE GUI, this code is runnable and will create the GUI window. This
+%code is broken up into 3 main sections. Input, Analysis, and Output. 
 
-
-function SPIFEE_GUI3()
+function SPIFEE_GUI()
 %Set up Window
 fig = uifigure('Position',[100 100 1000 800]);
 fig.Name = "Signal Processing & Integrated FEature Extraction (SPIFEE) Pipeline";
@@ -51,6 +52,7 @@ params.Heats = 0;
 params.Stats = 0;
 
 %Clustering Window
+params.ClustConfigured = 0;
 params.Eval = 0;
 params.Score = 'CalinskiHarabasz';
 params.All = 0;
@@ -60,6 +62,8 @@ params.ManClustAll = 0;
 %Output [Optional]
 params.Output = 1;
 params.Cond = 0;
+params.Folder = '';
+
 
 
 %Create shared apps structure
@@ -154,11 +158,11 @@ dd_PeakParams.Layout.Column = 1;
 dd_PeakParams.FontSize = 20;
 
 %Findpeaks Strength. Rework Tooltip
-dd_PeakParams = uidropdown(grid,'Placeholder',"FindPeaks() Strength","Tooltip", "3 options for findpeaks fidelity",...+
+dd_PeakParams2 = uidropdown(grid,'Placeholder',"FindPeaks() Strength","Tooltip", "3 options for findpeaks fidelity",...+
     'Items', {'','Default','Strict','Loose'},"ValueChangedFcn", @(src,event) ddPeakParamsChanged(src,event));
-dd_PeakParams.Layout.Row = 5;
-dd_PeakParams.Layout.Column = 2;
-dd_PeakParams.FontSize = 20;
+dd_PeakParams2.Layout.Row = 5;
+dd_PeakParams2.Layout.Column = 2;
+dd_PeakParams2.FontSize = 20;
 
 %NaN values % Threshold
 ef_Thresh = uieditfield(grid,'numeric',"Limits",[0 100],'Value',10,'Placeholder',"Missing Values Threshold","Tooltip", "The percentage of a trace that can be missing and be used. " +...
@@ -279,7 +283,7 @@ b.FontWeight = 'bold';
 b.Layout.Column = [1 3];
 b.Layout.Row = 13;
 
-exportapp(fig, 'SPIFEE.png')
+% exportapp(fig, 'SPIFEE.png')
 
 %exportapp(app.UIFigure, 'SPIFEE.png', 'Resolution', 600)
 
@@ -294,6 +298,8 @@ if event.Value == 0
     return
 end
 params = getappdata(0, 'sharedParams');
+isConfigured = isfield(params,'ClustConfigured') && params.ClustConfigured;
+
 params.("Clusters") = event.Value;
 setappdata(0, 'sharedParams', params);
 
@@ -303,84 +309,113 @@ fig2.Name = "Clustering";
 %Parental Control
 fig2.UserData.parentCheckbox = parentCheckbox;
 
-grid2 = uigridlayout(fig2,[4 3]);
+grid2 = uigridlayout(fig2,[3 3]);
 set(grid2, 'BackgroundColor', '#FFE6B8')
 
-%Title
-lbl_CTitle = uilabel(grid2,'Text','Clustering Analysis');
-lbl_CTitle.Layout.Row = 1;
-lbl_CTitle.FontSize = 20;
-lbl_CTitle.Layout.Column = [1 3];
-lbl_CTitle.HorizontalAlignment = 'center';
-lbl_CTitle.FontWeight = 'Bold';
+% %Title
+% lbl_CTitle = uilabel(grid2,'Text','Clustering Analysis');
+% lbl_CTitle.Layout.Row = 1;
+% lbl_CTitle.FontSize = 20;
+% lbl_CTitle.Layout.Column = [1 3];
+% lbl_CTitle.HorizontalAlignment = 'center';
+% lbl_CTitle.FontWeight = 'Bold';
 
 %Criteria Dropdown
-d1_Crit = uidropdown(grid2,'Placeholder',"ClusterScore","Tooltip", "Various clustering criteria, default is Calinksi-Harabasz",...
-    'Items', {'','CalinskiHarabasz','DaviesBouldin','Gap','Silhouette'},"ValueChangedFcn", ...
-    @(src,event) dChanged(src,event));
-d1_Crit.Layout.Row = 2;
+d1_Crit = uidropdown(grid2, ...
+    'Items', {'','CalinskiHarabasz','DaviesBouldin','Gap','Silhouette'}, ...
+    'Placeholder', "ClusterScore", ...
+    "Tooltip", "Various clustering criteria, default is Calinski-Harabasz", ...
+    "ValueChangedFcn", @(src,event) dChanged(src,event));
+
+d1_Crit.Layout.Row = 1;
 d1_Crit.Layout.Column = 1;
-d1_Crit.FontSize = 15;
+d1_Crit.FontSize = 20;
+
+if isConfigured && ~isempty(params.Score)
+    d1_Crit.Value = params.Score;
+end
 
 %Criteria Evalutation Graph
-cb_CritEval = uicheckbox(grid2,"Text","Clustering Scores Evaluation Graph","Tooltip", "Checking this box includes a "+ ...
-    "graph of each clustering score finding the optimal K value", "ValueChangedFcn", ...
-    @(src,event) cBoxChanged1(src,event));
-cb_CritEval.Layout.Row = 2;
+cb_CritEval = uicheckbox(grid2, ...
+    "Text","Clustering Scores Evaluation Graph", ...
+    "Tooltip","Graph of clustering score vs K", ...
+    "ValueChangedFcn", @(src,event) cBoxChanged1(src,event));
+
+cb_CritEval.Layout.Row = 1;
 cb_CritEval.Layout.Column = 2;
-cb_CritEval.FontSize = 15;
+cb_CritEval.FontSize = 20;
+
+if isConfigured
+    cb_CritEval.Value = logical(params.Eval);
+end
 
 %Manual Cluster
-ef4_Man = uieditfield(grid2,"Placeholder",'Manual Cluster Value (ex: 1-6)', ...
-    "Tooltip", "Manual imputation of the number of clusters to use. LEAVE BLANK to have number of clusters " + ...
-    "automatically evaluated","ValueChangedFcn", @(src,event) editField2(src,event));
-ef4_Man.Layout.Row = 2;
+ef4_Man = uieditfield(grid2, ...
+    "Placeholder",'Manual Cluster Value (ex: 1-6)', ...
+    "Tooltip","Leave blank for automatic K", ...
+    "ValueChangedFcn", @(src,event) editField2(src,event));
+
+ef4_Man.Layout.Row = 1;
 ef4_Man.Layout.Column = 3;
+ef4_Man.FontSize = 20;
+
+if isConfigured && params.ManClust ~= 0
+    ef4_Man.Value = num2str(params.ManClust);
+end
 
 %Cluster traces
-cb_Cond = uicheckbox(grid2,"Text","Cluster each Condition","Tooltip", "Checking this box includes a "+ ...
-    "graph of each cluster for each Condition", "ValueChangedFcn", ...
-    @(src,event) cBoxChanged2(src,event));
-cb_Cond.Layout.Row = 3;
+cb_Cond = uicheckbox(grid2, ...
+    "Text","Cluster each Condition", ...
+    "Tooltip","Cluster each condition separately", ...
+    "ValueChangedFcn", @(src,event) cBoxChanged2(src,event));
+
+cb_Cond.Layout.Row = 2;
 cb_Cond.Layout.Column = 1;
-cb_Cond.FontSize = 15;
+cb_Cond.FontSize = 20;
+
+if isConfigured
+    cb_Cond.Value = logical(params.Cond);
+end
+
 
 %ClusterALL
-cb_All = uicheckbox(grid2,"Text","Cluster All Conditions Together","Tooltip", "Checking this box includes a "+ ...
-    "Cluster evaluations of every condition pooled together into one big set", "ValueChangedFcn", ...
-    @(src,event) cBoxChangedAll(src,event));
-cb_All.Layout.Row = 3;
+cb_All = uicheckbox(grid2, ...
+    "Text","Cluster All Conditions Together", ...
+    "Tooltip","Pool all conditions into one clustering run", ...
+    "ValueChangedFcn", @(src,event) cBoxChangedAll(src,event));
+
+cb_All.Layout.Row = 2;
 cb_All.Layout.Column = 2;
-cb_All.FontSize = 15;
+cb_All.FontSize = 20;
+
+if isConfigured
+    cb_All.Value = logical(params.All);
+end
 
 %Manual Cluster All
-ef4_Man = uieditfield(grid2,"Placeholder",'All Data Manual Cluster Value (ex: 1-6)', ...
-    "Tooltip", "Manual imputation of the number of clusters to use for the Cluster All conditions together option. LEAVE BLANK to have number of clusters " + ...
-    "automatically evaluated","ValueChangedFcn", @(src,event) editField3(src,event));
-ef4_Man.Layout.Row = 3;
-ef4_Man.Layout.Column = 3;
+ef4_ManAll = uieditfield(grid2, ...
+    "Placeholder",'All Data Manual Cluster Value (ex: 1-6)', ...
+    "Tooltip","Leave blank for automatic K", ...
+    "ValueChangedFcn", @(src,event) editField3(src,event));
+
+ef4_ManAll.Layout.Row = 2;
+ef4_ManAll.Layout.Column = 3;
+ef4_ManAll.FontSize = 20;
+
+if isConfigured && params.ManClustAll ~= 0
+    ef4_ManAll.Value = num2str(params.ManClustAll);
+end
 
 %Button Update
 btn_Update = uibutton(grid2, ...
-    'Text','UPDATE', ...
-    'FontSize',16, ...
+    'Text','Update', ...
+    'FontSize',20, ...
     'ButtonPushedFcn', @(btn,event) clusteringUpdate(fig2));
 
-btn_Update.Layout.Row = 4;
+btn_Update.Layout.Row = 3;
 btn_Update.Layout.Column = [1 3];
 
-%TO DO: Reimplement for transient / given time course.
-%Numeric Value for Cluster End Points
-% lb2 = uilabel(grid2, "Text", "Cluster with End Points");
-% lb2.Layout.Row = 3;
-% lb2.Layout.Column = 3;
-% lb2.FontSize = 15;
-% lb2.HorizontalAlignment = 'center';
-% ef3 = uieditfield(grid2,"numeric", "Limits",[0, 1000],...
-%     "Tooltip", "Cluster with only the last ___ number of points instead of full traces","ValueChangedFcn", ...
-%     @(src,event) clustField1(src,event));
-% ef3.Layout.Row = 3;
-% ef3.Layout.Column = 2;
+exportapp(fig2, 'Clustering.png')
 
 end
 
@@ -430,54 +465,23 @@ setappdata(0, 'sharedParams', params);
 end
 
 function clusteringUpdate(fig2)
-
-    % Get parent checkbox
+    
     parentCheckbox = fig2.UserData.parentCheckbox;
-
-    % Optional: ensure clustering is "confirmed"
+    
     params = getappdata(0, 'sharedParams');
     params.Clusters = 1;
+    params.ClustConfigured = 1;
     setappdata(0, 'sharedParams', params);
 
-    % 🔥 Uncheck the checkbox in main GUI
+    % Change Label
+    %parentCheckbox.Text = "Clustering [Update Options in New Window]";
+    parentCheckbox.Text = "Clustering ✓ (Configured)";
+
+    % Uncheck (optional UX choice)
     parentCheckbox.Value = false;
 
-    % Close clustering window
     delete(fig2);
 end
-
-% %Prev Point Clusts
-% function clustField1(src, event)
-% params = getappdata(0, 'sharedParams');
-% params.("Prev") = event.Value;
-% setappdata(0, 'sharedParams', params);
-% end
-
-
-% %% Open Statistics Window
-% %Create new fig
-% function ActivateStats(src, event)
-% params = getappdata(0, 'sharedParams');
-% params.("Stats") = event.Value;
-% setappdata(0, 'sharedParams', params);
-% 
-% fig3 = uifigure;
-% fig3.Name = "Statistics";
-% grid3 = uigridlayout(fig3,[4 3]);
-% set(grid3, 'BackgroundColor', '#f5f4d0')
-% %guidata(fig2,params);
-% %handles = guidata(src)
-% 
-% %Title
-% Stitle = uilabel(grid3,'Text','Statistical Analysis Suite');
-% Stitle.Layout.Row = 1;
-% Stitle.FontSize = 20;
-% Stitle.Layout.Column = [1 3];
-% Stitle.HorizontalAlignment = 'center';
-% Stitle.FontWeight = 'Bold';
-% 
-% 
-% end
 
 
 %%
@@ -598,6 +602,6 @@ end
 function ButtonPushed(~, ~)
 
 params = getappdata(0, "sharedParams");
-SPIFEE_Master2(params)
+SPIFEE_Master(params)
 end
 
