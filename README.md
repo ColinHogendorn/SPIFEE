@@ -31,8 +31,9 @@ To learn how to use SPIFEE, please read the documentation and QuickStart guide.
 If you use our software please cite our paper:
 
 
-
-(Citation)
+SPIFEE - A pipeline for analyzing traces of live-cell fluorescence microscopy data
+Colin Hogendorn, Ingrid R. Aragon, Samuel Dallon, Eric Batchelor
+bioRxiv 2026.05.06.723263; doi: https://doi.org/10.64898/2026.05.06.723263
 
 
 
