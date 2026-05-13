@@ -1,3 +1,22 @@
+% computeJagged
+% ------------------------------------------------------------
+%  Evaluates trace continuity (jaggedness) across orientations
+%  Computes metrics per row and per column:
+%     - Total variation (TV)
+%     - Mean absolute first difference (J1)
+%     - Mean absolute second difference (J2)
+%     - Continuity score (C)
+%  Compares average continuity between row-wise and column-wise views
+%  Issues warning if data orientation (params.Vert) is likely incorrect
+%
+% Input:
+%  params - processing parameters
+%  currDataFilt - trace matrix (time x traces)
+%
+% Output:
+%  avgC_Col - average continuity score treating traces as columns
+%  avgC_Row - average continuity score treating traces as rows
+
 function [avgC_Col, avgC_Row] = computeJagged(params, currDataFilt)
 %Cell Orientation test. Trace Continuity. Throws Warning.
     %Only performs on traces that don't have NA values

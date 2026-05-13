@@ -1,4 +1,21 @@
-%Handles the various figure output file type for each of the figures plotted.
+% PlotLogic
+% ------------------------------------------------------------
+%  Handles saving figure outputs based on user-selected formats
+%  Supports single or multiple output types
+%  Formats:
+%     1 - .svg
+%     2 - .fig
+%     3 - .png
+%     4 - none (skip saving)
+%  Uses params to determine output selection and folder
+%
+% Input:
+%  params - processing parameters
+%  name - name of condition
+%  Fig - figure handle to save
+%
+% Output:
+%  none
 
 function PlotLogic(params, name, Fig)
     selection = params.Output;

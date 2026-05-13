@@ -1,3 +1,21 @@
+% MissingEval
+% ------------------------------------------------------------
+%  Evaluates missing data across traces
+%  Computes cumulative missingness over time
+%  Determines optimal cutoff balancing trace count and time points used
+%
+%  Plots:
+%     - Usable traces vs time (with suggested cutoff)
+%     - Histogram of % missing per trace (pass/fail by threshold)
+%
+% Input:
+%  name - name of condition
+%  params - processing parameters
+%  data - trace matrix (time x traces)
+%
+% Output:
+%  none
+
 function MissingEval(name, params,data)
    % Missing / Threshold Visualization
    % data = transpose(data);   % time x traces

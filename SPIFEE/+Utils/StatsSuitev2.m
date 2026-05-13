@@ -1,3 +1,33 @@
+% StatsSuitev2
+% ------------------------------------------------------------
+%  Performs statistical analysis across grouped feature data
+%  Tests:
+%     - Normality (Lilliefors per group)
+%     - Variance homogeneity (Levene)
+%     - Omnibus (ANOVA or KrUSKAL-WALLIS)
+%  Posthoc:
+%     - Tukey-Kramer (parametric) or Dunn-Sidak (nonparametric)
+%  Computes:
+%     - Pairwise comparisons with effect sizes (Cohen’s d / Cliff’s delta)
+%     - FDR correction (Benjamini-Hochberg)
+%     - Significant results and effect ranking
+%     - Condition distinctiveness summary
+%  Plots:
+%     - Effect size heatmap (feature × condition)
+%
+% Input:
+%  params - processing parameters
+%  feats - feature table (features x peaks/traces)
+%  groupLabels - grouping labels for each feature
+%
+% Output:
+%  results - struct containing:
+%     .Omnibus - omnibus test results
+%     .Pairwise - all pairwise comparisons
+%     .Significant - significant comparisons (FDR corrected)
+%     .EffectRanking - ranked significant effects
+%     .DistinctConditions - condition distinctiveness summary
+
 function results = StatsSuitev2(fullFeats,groupLabels,params)
 
 featNames = ["Height","Width","Prominence","Frequency","Integral"];

@@ -1,3 +1,18 @@
+% TraceHeatmap
+% ------------------------------------------------------------
+%  Generates heatmap visualization of trace data
+%  Cleans invalid values (-1 -> NaN) and transposes for display
+%  Applies percentile-based color scaling (1st–99th)
+%  Customizes axis tick labeling for readability
+%
+% Input:
+%  currDataFilt - filtered trace matrix (time x traces)
+%  name - name of condition
+%  params - processing parameters
+%
+% Output:
+%  none
+
 function TraceHeatmap(currDataFilt, name, params)
     figure;
     % Clean name

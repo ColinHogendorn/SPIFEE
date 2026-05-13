@@ -1,8 +1,7 @@
 % processData
 % ------------------------------------------------------------
 % Performs preprocessing and quality control on raw fluorescence data.
-%
-% Includes:
+% 
 % File loading and structure parsing
 % Orientation correction
 % Missing data filtering and optional interpolation
@@ -10,17 +9,17 @@
 % Normalization (Basal or Max)
 %
 % Input:
-%Files, location: file references
-%params: processing parameters
+%   Files, location - file references
+%   params - processing parameters
 %
 % Output:
-% dataStruct - structured array containing:
-% .data: filtered and processed traces
-% .IDs: indices of retained traces
-% .names: condition name
-% .Fullname: prefixed condition name
-% .JaggedCol: column jaggedness metric
-% .JaggedRow: row jaggedness metric
+%   dataStruct contains:
+%   .data - filtered and processed traces
+%   .IDs - indices of retained traces
+%   .names - condition name
+%   .Fullname - prefixed condition name
+%   .JaggedCol - column jaggedness metric
+%   .JaggedRow - row jaggedness metric
 
 function dataStruct = processData(Files, location, params)
 

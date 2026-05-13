@@ -1,4 +1,21 @@
-%Clustering within each treatement
+% ClustEvalFig
+% ------------------------------------------------------------
+%  Evaluates optimal number of clusters (K) using multiple criteria
+%  Methods:
+%     - Calinski-Harabasz
+%     - Davies-Bouldin
+%     - Gap statistic
+%     - Silhouette
+%  Plots comparison of evaluation metrics with indicated optimal K
+%
+% Input:
+%  params - processing parameters
+%  data - trace matrix (time x traces)
+%  name - name of condition
+%
+% Output:
+%  none
+
 function ClustEvalFig(params, data, name)
 ClusterEvalFig = figure;
 calinskiEvaluation = evalclusters(data,"kmeans","CalinskiHarabasz","KList",1:6);

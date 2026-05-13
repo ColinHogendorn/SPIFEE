@@ -1,3 +1,30 @@
+% ConditionClusteringFig
+% ------------------------------------------------------------
+%  Performs k-means clustering on trace data in one condition
+%  
+%  Automatic K selection via evalclusters (or manual override)
+%  Cluster assignment traces
+%  Average trace per cluster
+%  Cluster composition (fractions)
+% 
+%  Plots:
+%     - Cluster assignment traces
+%     - Average trace per cluster
+%     - Cluster composition (fractions)
+%
+% Input:
+%   params - processing parameters
+%   name - name of condition
+%   data - trace matrix (time x traces)
+%   feats - feature table (features x peaks/traces)
+%   FeatureNames - feature names (for table row labels)
+%
+% Output:
+%   percentages - fraction of traces in each cluster
+%   idx - cluster assignment per trace
+%   ClusterMeans - table of mean feature values per cluster
+
+
 function[percentages, idx, ClusterMeans] = ConditionClusteringFig(params,name,data,feats, FeatureNames)
 if params.Score == "DaviesBouldin"
     eva = evalclusters(data,'kmeans','DaviesBouldin', 'Klist', 1:6);
@@ -18,8 +45,8 @@ end
 %Manual Clustering Number. I dont'r remember why I need the params to have
 % this number in string format. Maybe it was because of the updated
 % clustering window logic? either way, this handles that.
-K_manual = str2double(params.ManClustAll);
-
+K_manual = str2double(params.ManClust);
+feats = table2array(feats);
 if ~isnan(K_manual) && K_manual > 0
     K = K_manual;
 end

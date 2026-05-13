@@ -1,4 +1,26 @@
-function txt = structToPlainEnglish(S,Files, Details, Data)
+% structToPlainEnglish
+% ------------------------------------------------------------
+%  Generates a human-readable summary of analysis settings
+%  Extracts preprocessing, filtering, normalization, and peak detection details
+%  Formats results into structured plain English text
+%  Includes:
+%     - Analysis metadata (date, environment)
+%     - Data file list
+%     - Preprocessing choices (filtering, window, normalization)
+%     - Data handling (orientation, missing data, imputation)
+%     - Peak detection parameters
+%  Saves summary as a text file
+%
+% Input:
+%  params: processing parameters
+%  Files - File list
+%  Details - Normalization choices and selections from SPIFEE
+%  Data - trace matrix (time x traces)
+%
+% Output:
+%  txt - formatted plain English summary string
+
+function txt = structToPlainEnglish(params,Files, Details, Data)
     %Plain English Output
     dayTime = string(datetime('now'));
     Details = Details{1};
@@ -7,7 +29,7 @@ function txt = structToPlainEnglish(S,Files, Details, Data)
     plainVer = "Software Environment:" +newline+ string(version) + newline;
     [Points, NumCells] = size(Data);
 
-    f = S(1);
+    f = params(1);
     %Filter Name
      if contains(f.Filt, "Gaussian") || contains(f.Filt, "Default")
         FiltName = "Gaussian";
@@ -102,9 +124,9 @@ function txt = structToPlainEnglish(S,Files, Details, Data)
         %"Maximum peak width: " + detes(7,2) + " hours";
     %tx
 
-   outputFile = S.Name +"_SPIFEE_Record_.txt";
+   outputFile = params.Name +"_SPIFEE_Record_.txt";
    
 
     txt = strjoin(lines, newline);
-    writelines(txt, fullfile(S.Folder,outputFile));
+    writelines(txt, fullfile(params.Folder,outputFile));
 end

@@ -2,24 +2,22 @@
 % ------------------------------------------------------------
 % Performs higher-level analysis across conditions.
 %
-% Includes:
-%   - Feature aggregation across datasets
-%   - Group labeling
-%   - Statistical analysis (StatsSuite)
-%   - Cross-condition clustering
+% Performs Feature aggregation across datasets, Group labeling, Statistical analysis (StatsSuite), 
+% and Cross-condition clustering
 %
 % Input:
 %   featureStruct - extracted feature data
-%   params        - analysis parameters
+%   params - processing parameters
 %
 % Output:
-% analysisStruct contains:
-% .fullFeats
-% .fullTraces
-% .names
-% .groupLabels
-% .stats (optional)
-%  .clusterAll (optional)
+%   analysisStruct contains:
+%   .fullFeats - All features across conditions
+%   .fullTraces - All traces across conditions
+%   .names - names of the data files
+%   .groupLabels - ID label (1,2,3.. etc) of each feature column. 
+%   .traceID - ID label of each trace.
+%   stats (optional) - Stats suite output
+%   clusterAll (optional) - Clustering on aggregated traces
 
 function analysisStruct = analyze(featureStruct, params)
 FeatureNames = ["Height","Location","Width","Prominence","Frequency","Integral","Peak#","Trace#","AvgMax","AvgMin","Peak over Basal","NumPeaks"];
@@ -33,6 +31,7 @@ for i = 1:numFiles
     featCounts(i)  = size(featureStruct(i).FeatsRaw,2);
     traceCounts(i) = size(featureStruct(i).Smoothed,2);
 end
+
 %Totals
 totalFeats = sum(featCounts);
 totalTraces = sum(traceCounts);
@@ -43,7 +42,6 @@ numTraceRows = size(featureStruct(1).Smoothed,1);
 allFeats   = zeros(numFeatRows, totalFeats);
 allTraces  = zeros(numTraceRows, totalTraces);
 groupLabels = strings(1, totalFeats);
-fullSetID   = zeros(1, totalFeats);
 traceID   = zeros(1, totalTraces);
 names       = strings(1, numFiles);
 
@@ -61,7 +59,6 @@ for i = 1:numFiles
     % Fill features
     allFeats(:, featIdx:featIdx+nF-1) = f.FeatsRaw;
     groupLabels(featIdx:featIdx+nF-1) = f.name; %FeatLabels
-    fullSetID(featIdx:featIdx+nF-1)   = i; %Feat Ids
     traceID(traceIdx:traceIdx+nT-1) = i; %Trace Ids
 
     

@@ -1,3 +1,24 @@
+% ClusterAllTraces
+% --------------------------------------------------------------------------
+%  Performs k-means clustering on the full aggregated trace data set, selects K using the specified
+%  evalclusters metric (or manual override).
+%
+%  Plots:
+%     - Average trace per cluster
+%     - Cluster composition (fractions)
+% Inputs:
+%   params - processing parameters
+%   name - names of conditions
+%   data - trace matrix (time x traces)
+%   feats - feature table (features x peaks/traces)
+%   FeatureNames - feature names (for table row labels)
+%   FullSetID - treatment labels for each trace
+% 
+% Outputs:
+%   TPercents - cluster fractions per treatment
+%   idx - cluster assignment per trace
+%   ClusterMeans - mean feature values per cluster
+
 function[TPercents,idx, ClusterMeans] = ClusterAllTraces(params,name,data,feats, FeatureNames, FullSetID)
 
 %These will throw an error if K > 6. TO DO: Handle K>6
@@ -18,11 +39,9 @@ end
 
 %Manual Clustering Number
 K_manual = str2double(params.ManClustAll);
-
 if ~isnan(K_manual) && K_manual > 0
     K = K_manual;
 end
-
 if K > min(size(data))
     disp("Not enough traces to cluster")
     K = 1;
@@ -32,11 +51,8 @@ SpaceNames = string(name);
 SpaceNames = strrep(SpaceNames, "_", " ");
 
 
-
 %Color Schemes
-
 colors = lines(6);
-
 nFeatures = size(feats,1);    % number of rows in feats
 clustMeans = zeros(nFeatures, K);
 legendNames = strings(1, K);
@@ -107,6 +123,7 @@ legend("Cluster " + string(1:numel(b)), ...
 
 ylim([0 1])
 addName = cellstr(params.Name);
+
 %Save Average Cluster Fig
 Utils.PlotLogic(params, (addName + "_AllClustAvg"), avgClusterTraceFig)
 

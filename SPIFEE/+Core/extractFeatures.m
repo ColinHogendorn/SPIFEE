@@ -7,16 +7,16 @@
 %
 % Input:
 %   dataStruct - output from processData
-%   params     - analysis parameters
+%   params - analysis parameters
 %
 % Output:
-%   featureStruct: structured array containing:
-%   .Features: feature table
-%   .FeatsRaw: raw feature matrix
-%   .Smoothed: smoothed traces
-%   .Filtered: filtered input traces
-%   .Means: (optional) feature averages
-%   .AvgTrace: (optional) mean trace
+%   featureStruct - structured array containing:
+%   Features - feature table
+%   FeatsRaw - raw feature matrix
+%   Smoothed - smoothed traces
+%   Filtered - filtered input traces
+%   Means - (optional) feature averages
+%   AvgTrace - (optional) mean trace
 
 function featureStruct = extractFeatures(dataStruct, params)
 
