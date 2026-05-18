@@ -11,12 +11,12 @@
 %   5. Visualization and result export
 
 function results = SPIFEE_Master(params)
-
-% Pipeline
-[Files,location, params] = Core.loadData(params) ;
-dataStruct      = Core.processData(Files, location, params);
-featureStruct   = Core.extractFeatures(dataStruct, params);
-analysisStruct  = Core.analyze(featureStruct, params);
-results         = Core.plot_SaveRez(analysisStruct, params);
+    
+    % Pipeline
+    [Files,location, params] = Core.loadData(params) ;
+    dataStruct      = Core.processData(Files, location, params);
+    featureStruct   = Core.extractFeatures(dataStruct, params);
+    analysisStruct  = Core.analyze(featureStruct, params);
+    results         = Core.plot_SaveRez(analysisStruct, params);
 
 end
